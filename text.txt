@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neo Color Palette</title>
+    <link rel="shortcut icon" href="./logo.png" type="image/png">
+    <link rel="stylesheet" href="style.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <h1 id="neo-heading"></h1>
+        <div class="palette" id="palette"></div>
+        <button onclick="generatePalette()">Generate New Palette</button>
+        <div id="export-buttons">
+            <button onclick="downloadPNG()">Download as PNG</button>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+
+</html>
+
+
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: #fdfbfb;
+    color: #333;
+    padding: 40px 20px;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+h1 {
+    margin-bottom: 50px;
+    font-size: 3rem;
+}
+
+.palette {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.color-box {
+    width: 140px;
+    height: 180px;
+    border-radius: 16px;
+    color: #fff;
+    font-weight: bold;
+    font-size: 1rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 12px;
+    cursor: pointer;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.color-box:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.color-box::after {
+    content: 'Copied!';
+    position: absolute;
+    bottom: 90px;
+    font-size: 0.85rem;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 4px 8px;
+    border-radius: 8px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+}
+
+.color-box.copied::after {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+button {
+    background-color: #4A90E2;
+    color: #fff;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+    background-color: #357ABD;
+}
+
+#export-buttons {
+    margin-top: 20px;
+}
+
+#export-buttons button {
+    margin: 10px;
+    background-color: #27ae60;
+}
+
+#export-buttons button:hover {
+    background-color: #209350;
+}
+
+@media (max-width: 600px) {
+    .color-box {
+        width: 100px;
+        height: 140px;
+        font-size: 0.9rem;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+}
+
+
+
+
+// Generate a random hex color
+function getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+        color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+}
+
+// Generate and display the color palette
+function generatePalette() {
+    const palette = document.getElementById('palette');
+    palette.innerHTML = ''; // Clear previous colors
+
+    for (let i = 0; i < 5; i++) {
+        const color = getRandomColor();
+        const box = document.createElement('div');
+        box.className = 'color-box';
+        box.style.backgroundColor = color;
+        box.textContent = color;
+        box.onclick = () => {
+            navigator.clipboard.writeText(color).then(() => {
+           // Add 'copied' class to show the notification
+           box.classList.add('copied');
+
+           // Remove the 'copied' class after a delay to hide the notification
+           setTimeout(() => {
+               box.classList.remove('copied');
+           }, 2000);
+       }).catch(err => {
+           console.error('Failed to copy: ', err);
+       });
+   };
+        palette.appendChild(box);
+    }
+}
+
+// Download the color palette as a PNG image
+function downloadPNG() {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const boxCount = 5;
+    const boxWidth = 150;
+    const boxHeight = 200;
+    canvas.width = boxWidth * boxCount;
+    canvas.height = boxHeight;
+
+    const colorBoxes = document.querySelectorAll('.color-box');
+
+    colorBoxes.forEach((box, index) => {
+        const bgColor = getComputedStyle(box).backgroundColor;
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(index * boxWidth, 0, boxWidth, boxHeight);
+
+        ctx.fillStyle = "#fff";
+        ctx.font = "14px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText(box.textContent.split('\n')[0], index * boxWidth + boxWidth / 2, boxHeight - 20);
+    });
+
+    const link = document.createElement('a');
+    link.download = 'color-palette.png';
+    link.href = canvas.toDataURL();
+    link.click();
+}
+
+// Generate one palette on load
+window.onload = generatePalette;
+
+// Style each letter of the heading with a different color
+function styleEachLetter(text, colors) {
+    const container = document.getElementById('neo-heading');
+    container.innerHTML = ''; // Clear existing
+
+    let index = 0;
+    text.split('').forEach(char => {
+        const span = document.createElement('span');
+        span.textContent = char;
+        if (char !== ' ') {
+            span.style.color = colors[index % colors.length];
+            index++;
+        } else {
+            span.innerHTML = '&nbsp;';
+        }
+        container.appendChild(span);
+    });
+}
+
+const headingText = '🎨 NEO Color Palette Generator';
+const colorSet = ['#e74c3c', '#f1c40f', '#2ecc71', '#3498db', '#9b59b6'];
+
+styleEachLetter(headingText, colorSet);
