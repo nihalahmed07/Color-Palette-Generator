@@ -1,0 +1,119 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+    background: #fdfbfb;
+    color: #333;
+    padding: 40px 20px;
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+h1 {
+    margin-bottom: 50px;
+    font-size: 3rem;
+}
+
+.palette {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.color-box {
+    width: 140px;
+    height: 180px;
+    border-radius: 16px;
+    color: #fff;
+    font-weight: bold;
+    font-size: 1rem;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: 12px;
+    cursor: pointer;
+    position: relative;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.color-box:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.color-box::after {
+    content: 'Copied!';
+    position: absolute;
+    bottom: 90px;
+    font-size: 0.85rem;
+    background: rgba(0, 0, 0, 0.6);
+    padding: 4px 8px;
+    border-radius: 8px;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: opacity 0.3s, transform 0.3s;
+    pointer-events: none;
+}
+
+.color-box.copied::after {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+button {
+    background-color: #4A90E2;
+    color: #fff;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+button:hover {
+    background-color: #357ABD;
+}
+
+#export-buttons {
+    margin-top: 20px;
+}
+
+#export-buttons button {
+    margin: 10px;
+    background-color: #27ae60;
+}
+
+#export-buttons button:hover {
+    background-color: #209350;
+}
+
+@media (max-width: 600px) {
+    .color-box {
+        width: 100px;
+        height: 140px;
+        font-size: 0.9rem;
+    }
+
+    h1 {
+        font-size: 1.5rem;
+    }
+}
